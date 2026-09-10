@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HarmonicSeam</title>
+<meta name="description" content="音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity ツール。2曲を和声のレベルで読み、切り替えてよい地点を判定し、調が遠ければ転調の橋の設計図を出す。">
+<style>
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; color: #222; background: #fff;
+         font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+         font-size: 17px; line-height: 1.8; }
+  h1 { font-size: 34px; margin: 0 0 4px; }
+  h2 { font-size: 19px; margin: 40px 0 10px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  p, ul, ol { margin: 0 0 14px; }
+  ul, ol { padding-left: 1.4em; }
+  li { margin: 4px 0; }
+  a { color: #1a5fb4; }
+  .ph { border: 1px solid #ccc; padding: 24px 12px; text-align: center; color: #777; margin: 10px 0 16px; font-size: 15px; }
+  .legend span { display: inline-block; width: 0.9em; height: 0.9em; vertical-align: -0.1em; margin: 0 0.3em 0 0.8em; }
+  .lang { float: right; font-size: 14px; }
+  footer { margin-top: 56px; border-top: 1px solid #ddd; padding-top: 12px; color: #777; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<a class="lang" id="top" href="#en">English</a>
+<h1>HarmonicSeam</h1>
+<p>音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity ツール。</p>
+
+<p>完成した2曲の MIDI を和声のレベルで読み、「曲Aのどこでなら曲Bへ移れるか」を判定する。
+調が遠ければ転調の橋の設計図を出す。ゲームの中では、その判定どおりのタイミングで切り替える。</p>
+
+<div class="ph">動画（約20秒）: 曲A → 橋 → 曲B</div>
+
+<h2>背景</h2>
+<p>ゲームの BGM は場面ごとに曲が用意され、場面が変わると曲も変わる。作曲家が納品するのは、たとえば「静かな曲」と「緊迫した曲」の2つのループ。</p>
+<p>切り替わる瞬間は作曲家が決められない。プレイヤーがいつ場面を変えるかは分からず、「曲Aの何小節目で曲Bに移るか」はゲームのプログラムがその場で決める。
+既存の仕組みは拍や小節には合わせられるが、和音の中身は見ていない。
+離脱の和音、進入の和音、声部の動き、調の距離。曲をつなぐときに必ず見るものが、検査されないまま継ぎ目が決まる。</p>
+
+<h2>機能</h2>
+<ol>
+  <li><strong>判定。</strong> 2曲の MIDI を読み、小節・拍ごとに和音と調を解析する。曲Aの各地点から曲Bの頭へ移る継ぎ目を、声部進行の禁則と調の距離で検査し、移ってよい地点に印をつける。</li>
+  <li><strong>橋の設計図。</strong> 調が遠くてそのままでは移れない地点に、曲Aの離脱和音から曲Bの進入和音へ渡る数小節を、4声で組み、禁則ゼロを検査して出す。音にするのは作曲家の仕事。</li>
+  <li><strong>ゲーム内の切替。</strong> 「曲Bへ」の指示に対し、いま鳴っている位置から一番近い合格地点まで待ち、必要なら橋を挟んで切り替える。断るときは理由を返す。</li>
+</ol>
+
+<h2>画面</h2>
+<div class="ph">画面1: 全体マップ（曲A全体を帯にして、切り替えの判定を色で表示）</div>
+<p class="legend"><span style="background:#3a9a5b"></span>移ってよい<span style="background:#d9a600"></span>調が遠い（橋があれば移れる）<span style="background:#9a9a9a"></span>禁則があって移れない</p>
+<div class="ph">画面2: 橋の設計図（度数進行と4声。試聴と参考 MIDI の書き出し）</div>
+<div class="ph">画面3: ゲーム内の切替表示（あと何秒で切り替わるか、なぜそこなのか）</div>
+
+<h2>検査項目</h2>
+<ul>
+  <li>声部進行の禁則8種（並行5度・8度、並達、導音と第7音の処理、内声の跳躍 など）。依拠は芸大和声。許可する禁則は選べる。</li>
+  <li>調の距離。離脱地点と進入地点の調性感の相関。</li>
+  <li>画面の地図の色と、ゲーム内で実際に選ばれる地点は、同じ計算から出る。</li>
+</ul>
+
+<h2>できないこと</h2>
+<ul>
+  <li><strong>MIDI が必要。</strong> 音声だけの曲は読めない。音声は MIDI と小節位置を合わせて書き出す。</li>
+  <li><strong>橋の音は作らない。</strong> 出すのは設計図まで。</li>
+  <li><strong>曲調の距離は解決しない。</strong> 調の距離は解決するが、テンポ・音色・リズムの違いはそのまま。</li>
+</ul>
+<p>ぶつ切りもクロスフェードも正しい演出。このツールはそれらを置き換えない。「和声的につながる」という選択肢を1つ足す。</p>
+
+<h2>試す</h2>
+<ul>
+  <li><a href="https://unityroom.com/games/liv-2608" target="_blank" rel="noopener">ブラウザで動くデモ（unityroom）</a></li>
+  <li>自分の曲で試す作曲家を募集中。必要なのは、MIDI と、それに合わせて書き出した音声のペアが2曲。</li>
+</ul>
+
+<h2>連絡先</h2>
+<ul>
+  <li>X: <a href="https://x.com/HeySugu" target="_blank" rel="noopener">@HeySugu</a></li>
+  <li>メール: <a href="mailto:sugusan.chan@gmail.com">sugusan.chan@gmail.com</a></li>
+</ul>
+
+<footer>© 2026 HarmonicSeam</footer>
+
+<!-- ===================== English ===================== -->
+<section id="en" style="margin-top:72px">
+<a class="lang" href="#top">日本語</a>
+<h1>HarmonicSeam</h1>
+<p>A Unity tool that uses music theory to build interactive music transitions for games.</p>
+
+<p>It reads the MIDI of two finished pieces at the level of harmony and decides where in piece A the music may move to piece B.
+When the keys are far apart, it drafts a modulating bridge. Inside the game, it switches at exactly those points.</p>
+
+<h2>Background</h2>
+<p>A composer delivers, say, a calm loop and a tense loop. The composer cannot choose the moment the music switches:
+the player decides when the scene changes, so the game engine picks the bar on the fly.
+Existing systems align to beats and bars but do not look inside the chords.
+The exit chord, the entry chord, the voice leading, the distance between keys: everything a composer checks when joining two passages goes unchecked at the seam.</p>
+
+<h2>Features</h2>
+<ol>
+  <li><strong>Judge.</strong> Analyzes chords and keys per bar and beat, checks every seam from piece A into the head of piece B against voice-leading rules and key distance, and marks the points where switching is allowed.</li>
+  <li><strong>Draft a bridge.</strong> Where the keys are too far apart, writes a few bars in four voices from A's exit chord to B's entry chord, verified to contain zero rule violations. Turning the draft into sound is the composer's job.</li>
+  <li><strong>Switch in the game.</strong> On a request for piece B, waits for the nearest allowed point, inserts the bridge if needed, and switches. A refusal comes with a reason.</li>
+</ol>
+
+<h2>Limitations</h2>
+<ul>
+  <li><strong>MIDI is required.</strong> Audio-only pieces cannot be analyzed.</li>
+  <li><strong>No bridge audio.</strong> The tool stops at the blueprint.</li>
+  <li><strong>Key distance only.</strong> Tempo, timbre and rhythm differences stay as they are.</li>
+</ul>
+<p>Hard cuts and crossfades are valid choices. This tool does not replace them. It adds one option: a harmonically connected transition.</p>
+
+<h2>Try</h2>
+<ul>
+  <li><a href="https://unityroom.com/games/liv-2608" target="_blank" rel="noopener">Browser demo (unityroom)</a></li>
+  <li>Composers willing to try it on their own music are welcome: two pieces, each as MIDI plus audio rendered from it.</li>
+</ul>
+
+<h2>Contact</h2>
+<ul>
+  <li>X: <a href="https://x.com/HeySugu" target="_blank" rel="noopener">@HeySugu</a></li>
+  <li>Email: <a href="mailto:sugusan.chan@gmail.com">sugusan.chan@gmail.com</a></li>
+</ul>
+</section>
+
+</body>
+</html>
