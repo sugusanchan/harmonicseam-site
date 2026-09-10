@@ -63,14 +63,13 @@
 <ol>
   <li><strong>判定。</strong> 2曲の MIDI を読み、小節・拍ごとに和音と調を解析する。曲Aの各地点から曲Bの頭へ移る継ぎ目を、声部進行の禁則と調の距離で検査し、移ってよい地点に印をつける。</li>
   <li><strong>橋の設計図。</strong> 調が遠くてそのままでは移れない地点に、曲Aの離脱和音から曲Bの進入和音へ渡る数小節を、4声で組み、禁則ゼロを検査して出す。音にするのは作曲家の仕事。</li>
-  <li><strong>ゲーム内の切替。</strong> 「曲Bへ」の指示に対し、いま鳴っている位置から一番近い合格地点まで待ち、必要なら橋を挟んで切り替える。断るときは理由を返す。</li>
+  <li><strong>ゲーム内の切替。</strong> 「曲Bへ」の指示に対し、いま鳴っている位置から一番近い合格地点まで待ち、必要なら橋を挟んで切り替える。ゲーム側には、切り替えの予定・完了・取り消し・拒否を理由つきで通知する。画面に出すかどうかはゲーム側の自由。</li>
 </ol>
 
 <h2>画面</h2>
 <figure><img src="img/analyzer-map.png" alt="アナライザー: 曲Aの切替可能地点の帯と境界チェック" loading="lazy"><figcaption>全体マップ。曲A全体を帯にして、切り替えの判定を色で表示。下は選んだ地点の継ぎ目（離脱和音 → 進入和音）</figcaption></figure>
 <p class="legend"><span style="background:#3a9a5b"></span>移ってよい<span style="background:#d9a600"></span>調が遠い（橋があれば移れる）<span style="background:#9a9a9a"></span>禁則があって移れない</p>
 <figure><img src="img/analyzer-bridge.png" alt="ブリッジ提案: 橋の4声と度数進行、検査結果" loading="lazy"><figcaption>橋の設計図。曲Aと曲Bの間に4声の橋（vii°7 → i64 → V7 → i）。禁則の検査結果と、試聴・参考 MIDI の書き出し</figcaption></figure>
-<figure><img src="img/game-hud.png" alt="ゲーム内の切替表示" loading="lazy"><figcaption>ゲーム内の表示。切り替えの指示を受けて、あと何秒で・なぜそこで切り替わるかを出す（曲A → 橋 → 曲B）</figcaption></figure>
 
 <h2>検査項目</h2>
 <ul>
@@ -120,7 +119,7 @@ The exit chord, the entry chord, the voice leading, the distance between keys: e
 <ol>
   <li><strong>Judge.</strong> Analyzes chords and keys per bar and beat, checks every seam from piece A into the head of piece B against voice-leading rules and key distance, and marks the points where switching is allowed.</li>
   <li><strong>Draft a bridge.</strong> Where the keys are too far apart, writes a few bars in four voices from A's exit chord to B's entry chord, verified to contain zero rule violations. Turning the draft into sound is the composer's job.</li>
-  <li><strong>Switch in the game.</strong> On a request for piece B, waits for the nearest allowed point, inserts the bridge if needed, and switches. A refusal comes with a reason.</li>
+  <li><strong>Switch in the game.</strong> On a request for piece B, waits for the nearest allowed point, inserts the bridge if needed, and switches. The game receives events for scheduled, completed, canceled and rejected switches, each with a reason; whether to show them on screen is up to the game.</li>
 </ol>
 
 <h2>Limitations</h2>
