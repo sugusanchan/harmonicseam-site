@@ -16,6 +16,9 @@
   li { margin: 4px 0; }
   a { color: #1a5fb4; }
   .ph { border: 1px solid #ccc; padding: 24px 12px; text-align: center; color: #777; margin: 10px 0 16px; font-size: 15px; }
+  .video { aspect-ratio: 16 / 9; margin: 10px 0 6px; background: #000; }
+  .video iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .note { color: #777; font-size: 14px; }
   figure { margin: 10px 0 18px; }
   figure img { width: 100%; height: auto; border: 1px solid #ddd; display: block; }
   figcaption { color: #777; font-size: 14px; margin-top: 6px; }
@@ -33,7 +36,8 @@
 <p>完成した2曲の MIDI を和声のレベルで読み、「曲Aのどこでなら曲Bへ移れるか」を判定する。
 調が遠ければ転調の橋の設計図を出す。ゲームの中では、その判定どおりのタイミングで切り替える。</p>
 
-<div class="ph">動画（約20秒）: 曲A → 橋 → 曲B</div>
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/9ddl3Ni2C9w" title="HarmonicSeam: 曲A → 橋 → 曲B" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="note">動画: 曲A → 橋 → 曲B。橋の設計図はツールが出し、音は作曲家が仕上げたもの。</p>
 
 <h2>背景</h2>
 <p>ゲームの BGM は場面ごとに曲が用意され、場面が変わると曲も変わる。作曲家が納品するのは、たとえば「静かな曲」と「緊迫した曲」の2つのループ。</p>
