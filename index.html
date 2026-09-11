@@ -61,9 +61,9 @@
 
 <h2>機能</h2>
 <ol>
-  <li><strong>判定。</strong> 2曲の MIDI を読み、小節・拍ごとに和音と調を解析する。曲Aの各地点から曲Bの頭へ移る継ぎ目を、声部進行の禁則と調の距離で検査し、移ってよい地点に印をつける。</li>
-  <li><strong>橋の設計図。</strong> 調が遠くてそのままでは移れない地点に、曲Aの離脱和音から曲Bの進入和音へ渡る数小節を、4声で組み、禁則ゼロを検査して出す。音にするのは作曲家の仕事。</li>
-  <li><strong>ゲーム内の切替。</strong> 「曲Bへ」の指示に対し、いま鳴っている位置から一番近い合格地点まで待ち、必要なら橋を挟んで切り替える。ゲーム側には、切り替えの予定・完了・取り消し・拒否を理由つきで通知する。画面に出すかどうかはゲーム側の自由。</li>
+  <li>判定。 2曲の MIDI を読み、小節・拍ごとに和音と調を解析する。曲Aの各地点から曲Bの頭へ移る継ぎ目を、声部進行の禁則と調の距離で検査し、移ってよい地点に印をつける。</li>
+  <li>橋の設計図。 調が遠くてそのままでは移れない地点に、曲Aの離脱和音から曲Bの進入和音へ渡る数小節を、4声で組み、禁則ゼロを検査して出す。音にするのは作曲家の仕事。</li>
+  <li>ゲーム内の切替。 「曲Bへ」の指示に対し、いま鳴っている位置から一番近い合格地点まで待ち、必要なら橋を挟んで切り替える。ゲーム側には、切り替えの予定・完了・取り消し・拒否を理由つきで通知する。画面に出すかどうかはゲーム側の自由。</li>
 </ol>
 
 <h2>画面</h2>
@@ -80,9 +80,9 @@
 
 <h2>できないこと</h2>
 <ul>
-  <li><strong>MIDI が必要。</strong> 音声だけの曲は読めない。音声は MIDI と小節位置を合わせて書き出す。</li>
-  <li><strong>橋の音は作らない。</strong> 出すのは設計図まで。</li>
-  <li><strong>曲調の距離は解決しない。</strong> 調の距離は解決するが、テンポ・音色・リズムの違いはそのまま。</li>
+  <li>MIDI が必要。 音声だけの曲は読めない。音声は MIDI と小節位置を合わせて書き出す。</li>
+  <li>橋の音は作らない。 出すのは設計図まで。</li>
+  <li>曲調の距離は解決しない。 調の距離は解決するが、テンポ・音色・リズムの違いはそのまま。</li>
 </ul>
 <p>ぶつ切りもクロスフェードも正しい演出。このツールはそれらを置き換えない。「和声的につながる」という選択肢を1つ足す。</p>
 
@@ -117,16 +117,16 @@ The exit chord, the entry chord, the voice leading, the distance between keys: e
 
 <h2>Features</h2>
 <ol>
-  <li><strong>Judge.</strong> Analyzes chords and keys per bar and beat, checks every seam from piece A into the head of piece B against voice-leading rules and key distance, and marks the points where switching is allowed.</li>
-  <li><strong>Draft a bridge.</strong> Where the keys are too far apart, writes a few bars in four voices from A's exit chord to B's entry chord, verified to contain zero rule violations. Turning the draft into sound is the composer's job.</li>
-  <li><strong>Switch in the game.</strong> On a request for piece B, waits for the nearest allowed point, inserts the bridge if needed, and switches. The game receives events for scheduled, completed, canceled and rejected switches, each with a reason; whether to show them on screen is up to the game.</li>
+  <li>Judge. Analyzes chords and keys per bar and beat, checks every seam from piece A into the head of piece B against voice-leading rules and key distance, and marks the points where switching is allowed.</li>
+  <li>Draft a bridge. Where the keys are too far apart, writes a few bars in four voices from A's exit chord to B's entry chord, verified to contain zero rule violations. Turning the draft into sound is the composer's job.</li>
+  <li>Switch in the game. On a request for piece B, waits for the nearest allowed point, inserts the bridge if needed, and switches. The game receives events for scheduled, completed, canceled and rejected switches, each with a reason; whether to show them on screen is up to the game.</li>
 </ol>
 
 <h2>Limitations</h2>
 <ul>
-  <li><strong>MIDI is required.</strong> Audio-only pieces cannot be analyzed.</li>
-  <li><strong>No bridge audio.</strong> The tool stops at the blueprint.</li>
-  <li><strong>Key distance only.</strong> Tempo, timbre and rhythm differences stay as they are.</li>
+  <li>MIDI is required. Audio-only pieces cannot be analyzed.</li>
+  <li>No bridge audio. The tool stops at the blueprint.</li>
+  <li>Key distance only. Tempo, timbre and rhythm differences stay as they are.</li>
 </ul>
 <p>Hard cuts and crossfades are valid choices. This tool does not replace them. It adds one option: a harmonically connected transition.</p>
 
