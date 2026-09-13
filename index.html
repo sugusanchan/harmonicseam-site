@@ -21,6 +21,10 @@
   .hint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none;
           background: rgba(0,0,0,.6); color: #fff; padding: 8px 14px; font-size: 15px; border-radius: 4px; }
   .note { color: #777; font-size: 14px; }
+  .clips { list-style: none; padding: 0; }
+  .clips li { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
+  .clips span { min-width: 12em; }
+  .clips audio { height: 32px; }
   figure { margin: 10px 0 18px; }
   figure img { width: 100%; height: auto; border: 1px solid #ddd; display: block; }
   figcaption { color: #777; font-size: 14px; margin-top: 6px; }
@@ -86,6 +90,25 @@
 </ul>
 <p>ぶつ切りもクロスフェードも正しい演出。このツールはそれらを置き換えない。「和声的につながる」という選択肢を1つ足す。</p>
 
+<h2>いま取り組んでいること</h2>
+<p>切り替えの瞬間 T の後ろには、鳴ってはいけない「次の打鍵」が本体の音源に録音済みで存在する。
+ぶつ切りにすると離脱和音の残響が失われ、フェードで切ると次の打鍵が混ざって濁る。どちらも継ぎ目が聞こえる。</p>
+<p>対策は、離脱点ごとに「T で鳴っていた音の鳴り残りだけ」を DAW から録っておき、実行時に本体からそこへ乗り換えること。
+DAW（FL Studio）を遠隔操作して離脱点の直前で止め、鳴り残りを録る道具と、実行時に乗り換える仕組みを作った。同じ和音・同じ音量の別テイクどうしを 20 ms で継ぐ。</p>
+<ul class="clips">
+  <li><span>そのまま（次の打鍵が鳴る）</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
+  <li><span>ぶつ切り</span><audio controls preload="none" src="audio/seam_cut.mp3"></audio></li>
+  <li><span>尾に乗り換え</span><audio controls preload="none" src="audio/seam_tail.mp3"></audio></li>
+</ul>
+<p class="note">3 秒目が切り替えの瞬間。同じ離脱点を 3 通りに。自作曲・FL Studio から採取。</p>
+
+<h2>これから</h2>
+<ul>
+  <li>尾の採取を著作した継ぎ目すべてで回し、実機で聴く。</li>
+  <li>作曲家に自分の曲で試してもらい、どこで手が止まるかを見る。</li>
+  <li>FL Studio 以外の DAW への対応。</li>
+</ul>
+
 <h2>試す</h2>
 <ul>
   <li><a href="https://unityroom.com/games/liv-2608" target="_blank" rel="noopener">ブラウザで動くデモ（unityroom）</a></li>
@@ -129,6 +152,23 @@ The exit chord, the entry chord, the voice leading, the distance between keys: e
   <li>Key distance only. Tempo, timbre and rhythm differences stay as they are.</li>
 </ul>
 <p>Hard cuts and crossfades are valid choices. This tool does not replace them. It adds one option: a harmonically connected transition.</p>
+
+<h2>Working on now</h2>
+<p>Right after the switch point T, the original audio still contains the next notes. A hard cut loses the exit chord's decay; a fade lets the next notes bleed in. Both are audible seams.</p>
+<p>The fix: for every exit point, record only the ring-out of what was sounding at T (by remote-controlling the DAW to stop just before T), and switch from the main track to that tail at runtime. Two takes of the same chord at the same level, joined with a 20 ms crossfade.</p>
+<ul class="clips">
+  <li><span>As is (next notes sound)</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
+  <li><span>Hard cut</span><audio controls preload="none" src="audio/seam_cut.mp3"></audio></li>
+  <li><span>Switch to tail</span><audio controls preload="none" src="audio/seam_tail.mp3"></audio></li>
+</ul>
+<p class="note">The switch is at 3 s. Same exit point, three ways. Original music, captured from FL Studio.</p>
+
+<h2>Next</h2>
+<ul>
+  <li>Capture tails for every authored seam and listen in the game.</li>
+  <li>Watch composers try it on their own music and note where they stall.</li>
+  <li>Support DAWs other than FL Studio.</li>
+</ul>
 
 <h2>Try</h2>
 <ul>
