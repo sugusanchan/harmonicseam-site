@@ -95,6 +95,7 @@
 ぶつ切りにすると離脱和音の残響が失われ、フェードで切ると次の打鍵が混ざって濁る。どちらも継ぎ目が聞こえる。</p>
 <p>対策は、離脱点ごとに「T で鳴っていた音の鳴り残りだけ」を DAW から録っておき、実行時に本体からそこへ乗り換えること。
 DAW（FL Studio）を遠隔操作して離脱点の直前で止め、鳴り残りを録る道具と、実行時に乗り換える仕組みを作った。同じ和音・同じ音量の別テイクどうしを 20 ms で継ぐ。</p>
+<p>DAW を遠隔操作して録る部分は試験的な実装で、パッケージには含めていない。仮想 MIDI ポートと、オーディオインターフェースのループバック入力が要る。どう配るかは考え中。</p>
 <ul class="clips">
   <li><span>そのまま（次の打鍵が鳴る）</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
   <li><span>ぶつ切り</span><audio controls preload="none" src="audio/seam_cut.mp3"></audio></li>
@@ -104,7 +105,7 @@ DAW（FL Studio）を遠隔操作して離脱点の直前で止め、鳴り残�
 
 <h2>これから</h2>
 <ul>
-  <li>尾の採取を著作した継ぎ目すべてで回し、実機で聴く。</li>
+  <li>継ぎ目で音が変わる曲を作り、尾の効き目を聴けるようにする。</li>
   <li>作曲家に自分の曲で試してもらい、どこで手が止まるかを見る。</li>
   <li>FL Studio 以外の DAW への対応。</li>
 </ul>
@@ -156,6 +157,7 @@ The exit chord, the entry chord, the voice leading, the distance between keys: e
 <h2>Working on now</h2>
 <p>Right after the switch point T, the original audio still contains the next notes. A hard cut loses the exit chord's decay; a fade lets the next notes bleed in. Both are audible seams.</p>
 <p>The fix: for every exit point, record only the ring-out of what was sounding at T (by remote-controlling the DAW to stop just before T), and switch from the main track to that tail at runtime. Two takes of the same chord at the same level, joined with a 20 ms crossfade.</p>
+<p>The DAW remote-control and recording part is experimental and not part of the package. It needs a virtual MIDI port and an audio interface with a loopback input. How to distribute it is still open.</p>
 <ul class="clips">
   <li><span>As is (next notes sound)</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
   <li><span>Hard cut</span><audio controls preload="none" src="audio/seam_cut.mp3"></audio></li>
@@ -165,7 +167,7 @@ The exit chord, the entry chord, the voice leading, the distance between keys: e
 
 <h2>Next</h2>
 <ul>
-  <li>Capture tails for every authored seam and listen in the game.</li>
+  <li>Write music whose seams change texture, so the tail's effect can be heard.</li>
   <li>Watch composers try it on their own music and note where they stall.</li>
   <li>Support DAWs other than FL Studio.</li>
 </ul>
