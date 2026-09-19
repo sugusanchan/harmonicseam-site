@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HarmonicSeam</title>
-<meta name="description" content="音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity ツール。2曲を和声のレベルで読み、切り替えてよい地点を判定し、調が遠ければ転調の橋の設計図を出す。">
+<meta name="description" content="音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity パッケージ。和声の計算はエディタで済ませ、ゲームの中では焼いた表を引いて切り替える。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sugusanchan.github.io/harmonicseam-site/">
+<meta property="og:title" content="HarmonicSeam">
+<meta property="og:description" content="音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity パッケージ。和声の計算はエディタで済ませ、ゲームの中では焼いた表を引いて切り替える。">
 <style>
   body { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; color: #222; background: #fff;
          font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
@@ -37,16 +41,17 @@
 
 <a class="lang" id="top" href="#en">English</a>
 <h1>HarmonicSeam</h1>
-<p>音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity ツール。</p>
+<p>音楽理論で、ゲームのインタラクティブな音楽演出を作る Unity パッケージ。</p>
 
-<p>完成した2曲の MIDI を和声のレベルで読み、「曲Aのどこでなら曲Bへ移れるか」を判定する。
-調が遠ければ転調の橋の設計図を出す。ゲームの中では、その判定どおりのタイミングで切り替える。</p>
+<p>和声の計算は Unity エディタで済ませる。曲の MIDI を解析して「どの曲のどの地点から、どの曲へ移れるか」を表に焼き、
+ゲームの中ではその表を引いて切り替える。MIDI を読むコードはエディタ専用で、ゲームのビルドには入らない。</p>
 
 <div class="video" id="videoBox">
   <video id="clip" src="video/intro.mp4" poster="video/poster.jpg" loop playsinline preload="metadata"></video>
   <div class="hint" id="hint">▶ クリックで再生（音が出ます）</div>
 </div>
-<p class="note">動画: 曲A → 橋 → 曲B（16秒・ループ）。橋の設計図はツールが出し、音は作曲家が仕上げたもの。
+<p class="note">動画: 曲A → 橋 → 曲B（16秒・ループ）。この2曲はいちばん遠い調どうしなので、毎回かならず橋を通る。
+橋の設計図はツールが出し、音は作曲家が仕上げたもの。
 <a href="https://youtu.be/9ddl3Ni2C9w" target="_blank" rel="noopener">YouTube で見る</a></p>
 <script>
 (function () {
@@ -58,62 +63,85 @@
 </script>
 
 <h2>背景</h2>
-<p>ゲームの BGM は場面ごとに曲が用意され、場面が変わると曲も変わる。作曲家が納品するのは、たとえば「静かな曲」と「緊迫した曲」の2つのループ。</p>
-<p>切り替わる瞬間は作曲家が決められない。プレイヤーがいつ場面を変えるかは分からず、「曲Aの何小節目で曲Bに移るか」はゲームのプログラムがその場で決める。
-既存の仕組みは拍や小節には合わせられるが、和音の中身は見ていない。
+<p>ゲームの BGM は場面ごとに曲が用意され、場面が変わると曲も変わる。切り替わる瞬間は作曲家が決められない。
+プレイヤーがいつ場面を変えるかは分からず、「曲Aの何小節目で曲Bに移るか」はゲームのプログラムがその場で決める。</p>
+<p>既存の仕組みは拍や小節には合わせられるが、和音の中身は見ていない。
 離脱の和音、進入の和音、声部の動き、調の距離。曲をつなぐときに必ず見るものが、検査されないまま継ぎ目が決まる。</p>
 
-<h2>機能</h2>
+<h2>要るもの</h2>
+<ul>
+  <li>曲の MIDI と、それに合わせて書き出した音声。2曲から。曲を足すと、その曲と既存の曲の組み合わせぶんが増える。</li>
+  <li>解析に渡す MIDI は、和声のトラックだけ。いまは解析するトラックを選ぶ画面が無い。</li>
+  <li>曲の中ではテンポと拍子が一定であること。曲と曲で違うのは構わない。</li>
+  <li>音声ファイルの長さが、音楽の長さと一致していること。残響で長いときは、同梱の道具で先頭へ回り込ませる。</li>
+</ul>
+<p>Unity 6000.3 以降。MIT ライセンス。</p>
+
+<h2>できること</h2>
 <ol>
-  <li>判定。 2曲の MIDI を読み、小節・拍ごとに和音と調を解析する。曲Aの各地点から曲Bの頭へ移る継ぎ目を、声部進行の禁則と調の距離で検査し、移ってよい地点に印をつける。</li>
-  <li>橋の設計図。 調が遠くてそのままでは移れない地点に、曲Aの離脱和音から曲Bの進入和音へ渡る数小節を、4声で組み、禁則ゼロを検査して出す。音にするのは作曲家の仕事。</li>
-  <li>ゲーム内の切替。 「曲Bへ」の指示に対し、いま鳴っている位置から一番近い合格地点まで待ち、必要なら橋を挟んで切り替える。ゲーム側には、切り替えの予定・完了・取り消し・拒否を理由つきで通知する。画面に出すかどうかはゲーム側の自由。</li>
+  <li>判定。 MIDI を読み、和音と調を解析する。曲Aの各地点から曲Bの頭へ移る継ぎ目を、声部進行の禁則と調の距離で検査し、移ってよい地点に印をつける。検査するのは継ぎ目だけで、曲の中の和声は評価しない。</li>
+  <li>橋の設計図。 調が遠くてそのままでは移れない地点に、曲Aの離脱和音から曲Bの進入和音へ渡る短い経過句を4声で組む。長さは1小節・2小節・1和音1小節から選ぶ。音を作って継ぎ目に登録すると、そこで橋が架かる。</li>
+  <li>ゲーム内の切替。 「曲Bへ」の指示に対し、切り替えてよい地点まで待ち、必要なら橋を挟んで切り替える。ゲーム側には切り替えの予定・完了・取り消しを知らせる。要求そのものを受けられなかったとき（一時停止中、橋が鳴っている最中など）は理由をつけて返す。</li>
 </ol>
+<p>1 を使うのに和声の知識は要らない。2 の橋を音にするには要る。</p>
 
 <h2>画面</h2>
-<figure><img src="img/analyzer-map.png" alt="アナライザー: 曲Aの切替可能地点の帯と境界チェック" loading="lazy"><figcaption>全体マップ。曲A全体を帯にして、切り替えの判定を色で表示。下は選んだ地点の継ぎ目（離脱和音 → 進入和音）</figcaption></figure>
-<p class="legend"><span style="background:#3a9a5b"></span>移ってよい<span style="background:#d9a600"></span>調が遠い（橋があれば移れる）<span style="background:#9a9a9a"></span>禁則があって移れない</p>
+<figure><img src="img/analyzer-map.png" alt="アナライザー: 曲Aの切替可能地点の帯と境界チェック" loading="lazy"><figcaption>Unity エディタの解析画面。曲A全体を帯にして、切り替えの判定を色で表示。下は選んだ地点の継ぎ目（離脱和音 → 進入和音）</figcaption></figure>
+<p class="legend"><span style="background:#3a9a5b"></span>切れる<span style="background:#d9a600"></span>調が遠い（橋なら切れる）<span style="background:#9a9a9a"></span>そのままでは切れない</p>
 <figure><img src="img/analyzer-bridge.png" alt="ブリッジ提案: 橋の4声と度数進行、検査結果" loading="lazy"><figcaption>橋の設計図。曲Aと曲Bの間に4声の橋（vii°7 → i64 → V7 → i）。禁則の検査結果と、試聴・参考 MIDI の書き出し</figcaption></figure>
 
-<h2>検査項目</h2>
+<h2>待ち時間と橋の本数</h2>
+<p>切り替えてよい地点まで待つのが既定。待たせたくない場面では速さ優先に切り替えると、検査を待たずに次の候補で切る。このとき橋は挟まない。
+切り替えてよい地点が1つも無いときは、橋があれば橋を渡り、無ければ一番近い候補で切って、検査を通っていないことをゲームへ知らせる。</p>
+<p>橋は組み合わせのぶんだけ用意しなくてよい。調が近ければ橋を通らずに繋がる。遠い調でも、1方向に1本あれば繋がる。
+本数を増やすと橋へ入れる地点が増え、待ちが縮む。1本だけにすると、その地点が回ってくるまで＝最長で曲1周ぶん待つ。</p>
+<p>同梱サンプルは、いちばん遠い調どうしの2曲で、曲Aの21箇所を橋の入口にして音源は6本。
+1本の音源を複数の入口で使い回している。切り替えを指示してから曲Aを離れるまで、最長 4.7 秒。</p>
+
+<h2>何を検査するか</h2>
 <ul>
-  <li>声部進行の禁則8種（並行5度・8度、並達、導音と第7音の処理、内声の跳躍 など）。依拠は芸大和声。許可する禁則は選べる。</li>
+  <li>継ぎ目の声部進行の禁則6種（連続5度・8度・ユニゾン、並達5度・8度、内声の跳躍）。依拠は芸大和声。</li>
+  <li>出荷時は並達5度・8度を許可済みで、この2つでは止まらない。許可する禁則は選べる。</li>
   <li>調の距離。離脱地点と進入地点の調性感の相関。</li>
-  <li>画面の地図の色と、ゲーム内で実際に選ばれる地点は、同じ計算から出る。</li>
+  <li>画面の地図の色は、ゲーム内で合否を決めるのと同じ計算から出る。</li>
 </ul>
 
 <h2>できないこと</h2>
 <ul>
-  <li>MIDI が必要。 音声だけの曲は読めない。音声は MIDI と小節位置を合わせて書き出す。</li>
-  <li>橋の音は作らない。 出すのは設計図まで。</li>
+  <li>MIDI が必要。 音声だけの曲は読めない。</li>
+  <li>橋の音は作らない。 出すのは設計図まで。登録していない継ぎ目では橋は使われない。</li>
   <li>曲調の距離は解決しない。 調の距離は解決するが、テンポ・音色・リズムの違いはそのまま。</li>
+  <li>解析するトラックを選べない。 ドラムや、打ち込みと出音が違うトラックが混ざった MIDI は正しく読めない。切り替えてよい地点を実際より多く出す。</li>
+  <li>和声で書かれていない曲は未検証。 lo-fi やアンビエントなど、機能和声に沿っていない曲でどこまで意味を持つかは、まだ測っていない。</li>
 </ul>
 <p>ぶつ切りもクロスフェードも正しい演出。このツールはそれらを置き換えない。「和声的につながる」という選択肢を1つ足す。</p>
 
 <h2>いま取り組んでいること</h2>
-<p>切り替えの瞬間 T の後ろには、鳴ってはいけない「次の打鍵」が本体の音源に録音済みで存在する。
-ぶつ切りにすると離脱和音の残響が失われ、フェードで切ると次の打鍵が混ざって濁る。どちらも継ぎ目が聞こえる。</p>
-<p>対策は、離脱点ごとに「T で鳴っていた音の鳴り残りだけ」を DAW から録っておき、実行時に本体からそこへ乗り換えること。
-DAW（FL Studio）を遠隔操作して離脱点の直前で止め、鳴り残りを録る道具と、実行時に乗り換える仕組みを作った。同じ和音・同じ音量の別テイクどうしを 20 ms で継ぐ。</p>
-<p>DAW を遠隔操作して録る部分は試験的な実装で、パッケージには含めていない。仮想 MIDI ポートと、オーディオインターフェースのループバック入力が要る。どう配るかは考え中。</p>
+<p>切り替えの瞬間の後ろには、鳴ってはいけない「次の打鍵」が本体の音源に録音済みで存在する。
+切ると離脱和音の残響が失われ、フェードで切ると次の打鍵が混ざる。どちらも継ぎ目が聞こえる。</p>
+<p>対策は、離脱点ごとに「その瞬間に鳴っていた音の鳴り残りだけ」を DAW から録っておき、実行時に本体からそこへ乗り換えること。
+採取する道具はパッケージに入っているが、FL Studio 専用・Windows 専用で、仮想 MIDI ポートとループバック入力が要る。
+他の DAW には対応していない。</p>
 <ul class="clips">
-  <li><span>そのまま（次の打鍵が鳴る）</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
+  <li><span>切らずに鳴らした原曲</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
   <li><span>ぶつ切り</span><audio controls preload="none" src="audio/seam_cut.mp3"></audio></li>
   <li><span>尾に乗り換え</span><audio controls preload="none" src="audio/seam_tail.mp3"></audio></li>
 </ul>
-<p class="note">3 秒目が切り替えの瞬間。同じ離脱点を 3 通りに。自作曲・FL Studio から採取。</p>
-
-<h2>これから</h2>
-<ul>
-  <li>継ぎ目で音が変わる曲を作り、尾の効き目を聴けるようにする。</li>
-  <li>作曲家に自分の曲で試してもらい、どこで手が止まるかを見る。</li>
-  <li>FL Studio 以外の DAW への対応。</li>
-</ul>
+<p class="note">3 秒目が切り替えの瞬間。同じ離脱点を 3 通りに。自作曲・FL Studio から採取。
+この曲は継ぎ目で音が大きく変わらないので、ここで聴き分けられるのは残響の有無まで。</p>
 
 <h2>試す</h2>
 <ul>
   <li><a href="https://unityroom.com/games/liv-2608" target="_blank" rel="noopener">ブラウザで動くデモ（unityroom）</a></li>
+  <li>パッケージは連絡先から個別に渡している。同梱サンプル（2曲と橋6本・ベイク済み）を入れればすぐ鳴る。</li>
   <li>自分の曲で試す作曲家を募集中。必要なのは、MIDI と、それに合わせて書き出した音声のペアが2曲。</li>
+</ul>
+
+<h2>更新履歴</h2>
+<ul>
+  <li>2026-09　継ぎ目の尾（切り替え直後の鳴り残り）を採取して乗り換える仕組み。試験的。</li>
+  <li>2026-08　HarmonicLogic から改名。解析画面を整理。</li>
+  <li>2026-07　橋の生成と、ゲーム内への挿入。Unity パッケージにまとめた。</li>
 </ul>
 
 <h2>連絡先</h2>
@@ -128,54 +156,103 @@ DAW（FL Studio）を遠隔操作して離脱点の直前で止め、鳴り残�
 <section id="en" style="margin-top:72px">
 <a class="lang" href="#top">日本語</a>
 <h1>HarmonicSeam</h1>
-<p>A Unity tool that uses music theory to build interactive music transitions for games.</p>
+<p>A Unity package that uses music theory to build interactive music transitions for games.</p>
 
-<p>It reads the MIDI of two finished pieces at the level of harmony and decides where in piece A the music may move to piece B.
-When the keys are far apart, it drafts a modulating bridge. Inside the game, it switches at exactly those points.</p>
+<p>The harmonic analysis runs in the Unity editor. It reads the MIDI of your pieces, bakes a table of
+where the music may move from one piece to another, and at run time the game reads that table and switches.
+The MIDI-reading code is editor-only and is not included in a player build.</p>
+
+<div class="video">
+  <video src="video/intro.mp4" poster="video/poster.jpg" controls loop playsinline preload="metadata"></video>
+</div>
+<p class="note">Piece A → bridge → piece B (16 s, looping). These two pieces are a tritone apart, the hardest case,
+so every switch goes through a bridge. The tool drafts the bridge; a composer turns the draft into sound.
+<a href="https://youtu.be/9ddl3Ni2C9w" target="_blank" rel="noopener">Watch on YouTube</a></p>
 
 <h2>Background</h2>
 <p>A composer delivers, say, a calm loop and a tense loop. The composer cannot choose the moment the music switches:
-the player decides when the scene changes, so the game engine picks the bar on the fly.
-Existing systems align to beats and bars but do not look inside the chords.
-The exit chord, the entry chord, the voice leading, the distance between keys: everything a composer checks when joining two passages goes unchecked at the seam.</p>
+the player decides when the scene changes, so the game engine picks the bar on the fly.</p>
+<p>Existing systems align to beats and bars but do not look inside the chords.
+The exit chord, the entry chord, the voice leading, the distance between keys: everything a composer checks when
+joining two passages goes unchecked at the seam.</p>
 
-<h2>Features</h2>
+<h2>What you need</h2>
+<ul>
+  <li>MIDI for each piece, plus audio rendered from it. Two pieces or more. Adding a piece adds the pairs it forms with the existing ones.</li>
+  <li>The MIDI you hand to the analyzer must contain only the harmony tracks. There is no track-selection screen yet.</li>
+  <li>Constant tempo and time signature within a piece. They may differ between pieces.</li>
+  <li>Audio files whose length matches the length of the music. If reverb makes a file longer, the included tool wraps the tail back to the head.</li>
+</ul>
+<p>Unity 6000.3 or later. MIT license.</p>
+
+<h2>What it does</h2>
 <ol>
-  <li>Judge. Analyzes chords and keys per bar and beat, checks every seam from piece A into the head of piece B against voice-leading rules and key distance, and marks the points where switching is allowed.</li>
-  <li>Draft a bridge. Where the keys are too far apart, writes a few bars in four voices from A's exit chord to B's entry chord, verified to contain zero rule violations. Turning the draft into sound is the composer's job.</li>
-  <li>Switch in the game. On a request for piece B, waits for the nearest allowed point, inserts the bridge if needed, and switches. The game receives events for scheduled, completed, canceled and rejected switches, each with a reason; whether to show them on screen is up to the game.</li>
+  <li>Judge. Analyzes chords and keys, checks every seam from piece A into the head of piece B against voice-leading rules and key distance, and marks the points where switching is allowed. Only the seam is checked; the harmony inside a piece is not graded.</li>
+  <li>Draft a bridge. Where the keys are too far apart, writes a short passage in four voices from A's exit chord to B's entry chord. One bar, two bars, or one bar per chord. Record the draft and register it at that seam, and the bridge is used there.</li>
+  <li>Switch in the game. On a request for piece B, waits for an allowed point, inserts the bridge if needed, and switches. The game is told when a switch is scheduled, completed and canceled. If the request itself cannot be accepted (paused, a bridge is already sounding, and so on), it comes back with a reason.</li>
 </ol>
+<p>Using 1 needs no knowledge of harmony. Turning the bridge in 2 into sound does.</p>
+
+<h2>Screens</h2>
+<figure><img src="img/analyzer-map.png" alt="Analyzer: the band of allowed switch points in piece A, and the seam check" loading="lazy"><figcaption>The analyzer window in the Unity editor. Piece A as a band, coloured by the verdict. Below it, the seam at the selected point (exit chord → entry chord)</figcaption></figure>
+<p class="legend"><span style="background:#3a9a5b"></span>can switch<span style="background:#d9a600"></span>keys are far (a bridge makes it work)<span style="background:#9a9a9a"></span>not as it stands</p>
+<figure><img src="img/analyzer-bridge.png" alt="Bridge panel: four voices, degrees, and the verification result" loading="lazy"><figcaption>The bridge draft. Four voices between A and B (vii°7 → i64 → V7 → i), the rule-check result, and export to audition or reference MIDI</figcaption></figure>
+
+<h2>Waiting, and how many bridges</h2>
+<p>By default the switch waits for an allowed point. Where waiting is unacceptable, turn on earliest-first:
+it switches at the next candidate without waiting for the check, and does not insert a bridge.
+If there is no allowed point at all, it takes the bridge when one exists, otherwise it switches at the nearest
+candidate and tells the game that the seam did not pass the check.</p>
+<p>You do not need one bridge per combination. When the keys are close, the music connects without one.
+Even for distant keys, one bridge per direction is enough to connect. More bridges mean more entry points, which
+shortens the wait. With a single bridge, the wait is at most one loop of the piece.</p>
+<p>The included sample uses two pieces a tritone apart: 21 entry points in piece A, served by 6 recorded bridges,
+several entry points sharing the same recording. From the request to leaving piece A is at most 4.7 seconds.</p>
+
+<h2>What is checked</h2>
+<ul>
+  <li>Six voice-leading violations at the seam: parallel fifths, octaves and unisons; direct fifths and octaves; large leaps in an inner voice. Based on the Geidai harmony textbooks.</li>
+  <li>Direct fifths and octaves are allowed out of the box, so they do not block a switch. Which violations to allow is configurable.</li>
+  <li>Key distance: the correlation between the tonal profiles at the exit point and the entry point.</li>
+  <li>The colours on the map come from the same calculation the game uses to decide.</li>
+</ul>
 
 <h2>Limitations</h2>
 <ul>
   <li>MIDI is required. Audio-only pieces cannot be analyzed.</li>
-  <li>No bridge audio. The tool stops at the blueprint.</li>
+  <li>No bridge audio. The tool stops at the draft. A seam with no registered bridge does not get one.</li>
   <li>Key distance only. Tempo, timbre and rhythm differences stay as they are.</li>
+  <li>No track selection. MIDI containing drums, or tracks whose written pitch differs from what sounds, is read incorrectly, and reports more allowed points than there really are.</li>
+  <li>Untested outside functional harmony. How much the analysis means for lo-fi, ambient and similar music has not been measured.</li>
 </ul>
 <p>Hard cuts and crossfades are valid choices. This tool does not replace them. It adds one option: a harmonically connected transition.</p>
 
 <h2>Working on now</h2>
-<p>Right after the switch point T, the original audio still contains the next notes. A hard cut loses the exit chord's decay; a fade lets the next notes bleed in. Both are audible seams.</p>
-<p>The fix: for every exit point, record only the ring-out of what was sounding at T (by remote-controlling the DAW to stop just before T), and switch from the main track to that tail at runtime. Two takes of the same chord at the same level, joined with a 20 ms crossfade.</p>
-<p>The DAW remote-control and recording part is experimental and not part of the package. It needs a virtual MIDI port and an audio interface with a loopback input. How to distribute it is still open.</p>
+<p>Right after the switch point, the original audio still contains the next notes.
+A hard cut loses the exit chord's decay; a fade lets the next notes bleed in. Both are audible seams.</p>
+<p>The fix: for every exit point, record only the ring-out of what was sounding at that moment, and switch from the
+main track to that tail at run time. The capture tool ships in the package, but it drives FL Studio, runs on Windows only,
+and needs a virtual MIDI port and a loopback input. Other DAWs are not supported.</p>
 <ul class="clips">
-  <li><span>As is (next notes sound)</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
+  <li><span>Uncut original</span><audio controls preload="none" src="audio/seam_orig.mp3"></audio></li>
   <li><span>Hard cut</span><audio controls preload="none" src="audio/seam_cut.mp3"></audio></li>
   <li><span>Switch to tail</span><audio controls preload="none" src="audio/seam_tail.mp3"></audio></li>
 </ul>
-<p class="note">The switch is at 3 s. Same exit point, three ways. Original music, captured from FL Studio.</p>
+<p class="note">The switch is at 3 s. Same exit point, three ways. Original music, captured from FL Studio.
+This piece does not change much in texture at the seam, so what you can hear here is the presence of the decay.</p>
 
-<h2>Next</h2>
-<ul>
-  <li>Write music whose seams change texture, so the tail's effect can be heard.</li>
-  <li>Watch composers try it on their own music and note where they stall.</li>
-  <li>Support DAWs other than FL Studio.</li>
-</ul>
-
-<h2>Try</h2>
+<h2>Try it</h2>
 <ul>
   <li><a href="https://unityroom.com/games/liv-2608" target="_blank" rel="noopener">Browser demo (unityroom)</a></li>
+  <li>The package is handed out individually; write to the address below. Import the included sample (two pieces and six bridges, already baked) and it plays.</li>
   <li>Composers willing to try it on their own music are welcome: two pieces, each as MIDI plus audio rendered from it.</li>
+</ul>
+
+<h2>Changelog</h2>
+<ul>
+  <li>2026-09 — Capturing the seam tail (the ring-out just after a switch) and switching to it. Experimental.</li>
+  <li>2026-08 — Renamed from HarmonicLogic. Analyzer screen tidied up.</li>
+  <li>2026-07 — Bridge generation and insertion at run time. Packaged for Unity.</li>
 </ul>
 
 <h2>Contact</h2>
@@ -183,6 +260,8 @@ The exit chord, the entry chord, the voice leading, the distance between keys: e
   <li>X: <a href="https://x.com/HeySugu" target="_blank" rel="noopener">@HeySugu</a></li>
   <li>Email: <a href="mailto:sugusan.chan@gmail.com">sugusan.chan@gmail.com</a></li>
 </ul>
+
+<footer>© 2026 HarmonicSeam</footer>
 </section>
 
 </body>
